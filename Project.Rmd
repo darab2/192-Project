@@ -1,0 +1,55 @@
+---
+title: "291 Project"
+output: html_document
+date: '2022-12-09'
+---
+```{r}
+HIV_Data <- read.csv("HIV_AIDS_Diagnoses_by_Neighborhood__Sex__and_Race_Ethnicity (3).csv")
+```
+
+
+```{r}
+library(tidyverse)
+library(Stat2Data)
+library(dplyr)
+```
+
+```{r}
+race_data <- HIV_Data %>% 
+  mutate(race_binary=ifelse(`RACE.ETHNICITY`=="White", 0, 1)) %>%
+  select(YEAR, race_binary, `Neighborhood..U.H.F.`, `HIV.DIAGNOSES.PER.100.000.POPULATION`, Borough, SEX, `RACE.ETHNICITY`) %>%
+  rename("year" = "YEAR", "neighborhood" = "Neighborhood..U.H.F.", "diagnoses_per_pop" = "HIV.DIAGNOSES.PER.100.000.POPULATION", "borough" = "Borough", "sex" = "SEX", "race" = "RACE.ETHNICITY") %>%
+  mutate(diagnoses_per_pop_numeric=as.numeric(diagnoses_per_pop))
+```
+
+```{r}
+race_logit_model <- glm(race_binary ~ diagnoses_per_pop_numeric, data = race_data, family = binomial)
+```
+
+
+```{r}
+summary(race_logit_model)
+```
+
+
+```{r}
+HIV_Data %>%
+  count(Neighborhood..U.H.F.) 
+```
+
+```{r}
+neighborhood_data <- HIV_Data %>%
+  filter(Neighborhood..U.H.F. == "Chelsea - Clinton" | Neighborhood..U.H.F. == "East Harlem") %>%
+rename("year" = "YEAR", "neighborhood" = "Neighborhood..U.H.F.", "diagnoses_per_pop" = "HIV.DIAGNOSES.PER.100.000.POPULATION", "borough" = "Borough", "sex" = "SEX", "race" = "RACE.ETHNICITY") %>%
+   mutate(neighborhood_binary=ifelse(`neighborhood`=="East Harlem", 0, 1)) %>%
+    mutate(diagnoses_per_pop_numeric=as.numeric(diagnoses_per_pop))
+```
+
+```{r}
+neighborhood_logit_model <- glm(neighborhood_binary ~ diagnoses_per_pop_numeric, data = neighborhood_data, family = binomial)
+```
+
+```{r}
+summary(neighborhood_logit_model)
+```
+
