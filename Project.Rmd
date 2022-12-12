@@ -19,8 +19,12 @@ race_data <- HIV_Data %>%
   mutate(race_binary=ifelse(`RACE.ETHNICITY`=="White", 0, 1)) %>%
   select(YEAR, race_binary, `Neighborhood..U.H.F.`, `HIV.DIAGNOSES.PER.100.000.POPULATION`, Borough, SEX, `RACE.ETHNICITY`) %>%
   rename("year" = "YEAR", "neighborhood" = "Neighborhood..U.H.F.", "diagnoses_per_pop" = "HIV.DIAGNOSES.PER.100.000.POPULATION", "borough" = "Borough", "sex" = "SEX", "race" = "RACE.ETHNICITY") %>%
-  mutate(diagnoses_per_pop_numeric=as.numeric(diagnoses_per_pop))
+  mutate(diagnoses_per_pop_numeric=as.numeric(diagnoses_per_pop)) %>%
+  filter(race != "All") %>%
+  filter(race != "Unknown")
 ```
+
+First, we modeled the probability of a person in NYC being non-white given the HIV diagnoses per 100,000 people where they live. 
 
 ```{r}
 race_logit_model <- glm(race_binary ~ diagnoses_per_pop_numeric, data = race_data, family = binomial)
@@ -28,9 +32,15 @@ race_logit_model <- glm(race_binary ~ diagnoses_per_pop_numeric, data = race_dat
 
 
 ```{r}
-summary(race_logit_model)
+summary(race_logit_model)$coefficients
 ```
 
+In logit form, our fitted model equation is
+$log(\hat{pi}/(1-\hat{pi})) = 1.285 + .007*diagnosesper100000pop$
+
+The intercept coefficient means that for a place where the HIV diagnoses per 100,000 people were 0, the log-odds of a person being non-white were 1.285.
+
+**CONVERT FROM ODDS TO LOG ODDS NEXT, then analyze the slope coefficient, then make a graph**
 
 ```{r}
 HIV_Data %>%
@@ -68,4 +78,5 @@ sex_logit_model <- glm(sex_binary ~ diagnoses_per_pop_numeric, data = sex_data, 
 ```{r}
 summary(sex_logit_model)
 ```
+
 
