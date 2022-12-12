@@ -53,3 +53,19 @@ neighborhood_logit_model <- glm(neighborhood_binary ~ diagnoses_per_pop_numeric,
 summary(neighborhood_logit_model)
 ```
 
+```{r}
+sex_data <- HIV_Data %>% 
+rename("year" = "YEAR", "neighborhood" = "Neighborhood..U.H.F.", "diagnoses_per_pop" = "HIV.DIAGNOSES.PER.100.000.POPULATION", "borough" = "Borough", "sex" = "SEX", "race" = "RACE.ETHNICITY") %>%
+   mutate(sex_binary=ifelse(`sex`=="Male", 0, 1)) %>%
+    mutate(diagnoses_per_pop_numeric=as.numeric(diagnoses_per_pop))
+  
+```
+
+```{r}
+sex_logit_model <- glm(sex_binary ~ diagnoses_per_pop_numeric, data = sex_data, family = binomial)
+```
+
+```{r}
+summary(sex_logit_model)
+```
+
