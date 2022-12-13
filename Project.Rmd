@@ -1,20 +1,47 @@
 ---
-title: "291 Project"
+title: "Analysis of New HIV Diagnoses in NYC by Race, Sex, and Neighborhood"
 output: html_document
 date: '2022-12-09'
 ---
-```{r}
+```{r, include=FALSE}
 HIV_Data <- read.csv("HIV_AIDS_Diagnoses_by_Neighborhood__Sex__and_Race_Ethnicity (3).csv")
 ```
 
+#Abstract
 
-```{r}
+The purpose of our analysis is to examine the intersectional relationship between race, sex, neighborhood, and likelihood of HIV diagnosis in New York City. Our analysis was based on the HIV/AIDS Diagnoses by Neighborhood, Sex, and Race/Ethnicity data from NYC Open Data, which includes data on new HIV/AIDS diagnoses in New York City from 2016 through 2020. By fitting three logistic regression models with HIV diagnoses per 100,00 people as the response variable, we found that neighborhood and race were significant predictors of the likelihood of HIV diagnosis. Our research investigates New York City’s modern HIV/AIDS landscape and the social determinants of health that leave specific demographics more vulnerable to infection.
+
+\newpage
+
+#Introduction
+
+The CDC estimates that there are roughly 1.1 million people living with HIV/AIDS in the United States. The death rate from the illness continues to decline due to increased access to highly effective antiretroviral therapy. While progress has been made towards the ultimate goal of ending the epidemic, about 50,000 new infections occur each year. Of the 1.1 million Americans living with HIV/AIDS, about 16% do not know their status and therefore cannot access treatment (Watkins-Hayes 2014, 432). Various factors, including class, race, sex, and sexual orientation, interact to determine one’s likelihood of exposure to the virus and their access to diagnosis and treatment (Watkins-Hayes 2014, 431; Watkins-Hayes 2014, 434). According to David Huebner, professor of prevention and community health at George Washington University, regional, ethnic, and racial disparities in HIV cases persist in 2022 (Gainer and Brennan 2022). 
+
+The theme of this year’s World AIDS Day was “equal access to testing and treatment.” Accordingly, our research focuses on social determinants that impact an individual’s likelihood of being diagnosed with HIV (Gainer and Brennan 2022). It has been established that several social factors affect the likelihood of infection. However, infection is not synonymous with diagnosis; a patient must have access to testing in order to receive a diagnosis, which suggests greater access to resources in general. We aimed to determine whether there is a significant link between sex, race, and neighborhood and likelihood of HIV diagnosis in order to better understand which demographics are perhaps more susceptible to infection but also have greater access to testing. Further, there appears to be little pre-existing analysis on the link between neighborhood and likelihood of HIV diagnosis, so our research aims to fill that gap and encourage further research in that area. 
+
+#Methods
+
+##Data
+
+This study uses data from NYC OpenData, that was given to the NYC Depart of Health and Mental Hygiene (DOHMH). The dataset, HIV/AIDS Diagnoses by Neighborhood, Sex, and Race/Ethnicity, includes data on people who were diagnosed with HIV/AIDS in NYC from 2010 through 2020. A unit of observation in the dataset is the number of people diagnosed with HIV/AIDS by year, neighborhood, sex, and race/ethnicity. 
+
+##Variables
+
+The variables in our analysis include a binary primary explanatory variable indicating whether or not a person is white, HIV diagnoses per 100,000 people as the primary response variable, a binary explanatory variable indicating whether a neighborhood is East Harlem (0) or Chelsea - Clinton (1) as the secondary explanatory variable, and a binary tertiary explanatory variable indicating whether or not a person is male. 
+
+##Analysis
+
+In order to evaluate our hypotheses, we fit 3 different logistic regression models with HIV diagnoses per 100,000 people as the primary response variable. Our first model is our primary explanatory variable to observe the relationship between race and probability of an HIV diagnosis. Our second model includes our secondary explanatory variable to understand how wealth differences in two different Manhattan neighborhoods impact HIV diagnoses. Our third model uses our tertiary explanatory variable to observe sex differences in the number of people diagnoses with HIV. To test our hypotheses, we performed individual significance tests and used the calculated p-value to determine the effects of each coefficient on the model.
+
+#Results
+
+```{r, include=FALSE}
 library(tidyverse)
 library(Stat2Data)
 library(dplyr)
 ```
 
-```{r}
+```{r, include=FALSE}
 race_data <- HIV_Data %>% 
   mutate(race_binary=ifelse(`RACE.ETHNICITY`=="White", 0, 1)) %>%
   select(YEAR, race_binary, `Neighborhood..U.H.F.`, `HIV.DIAGNOSES.PER.100.000.POPULATION`, Borough, SEX, `RACE.ETHNICITY`) %>%
@@ -26,12 +53,12 @@ race_data <- HIV_Data %>%
 
 First, we modeled the probability of a person in NYC being non-white given the HIV diagnoses per 100,000 people where they live. 
 
-```{r}
+```{r, include=FALSE}
 race_logit_model <- glm(race_binary ~ diagnoses_per_pop_numeric, data = race_data, family = binomial)
 ```
 
 
-```{r}
+```{r, include=FALSE}
 summary(race_logit_model)$coefficients
 ```
 
@@ -52,7 +79,7 @@ exp(0.007639701)
 
 This means that the estimated odds of a person being non-white increase by 1.008 for each additional diagnosis per 100,000 people.
 
-```{r}
+```{r, echo=FALSE}
 ggplot(data = race_data, aes(x= diagnoses_per_pop_numeric, y= race_binary)) +
   geom_point() + 
   geom_smooth(method = glm, 
@@ -66,12 +93,12 @@ For this model, our null hypothesis is that the log-odds of a person being non-w
 
 Since the p-value for the z-test we performed is 7.903*10^-13, which is less than .05, we can conclude that there is significant evidence to support the alternative hypothesis, and that there's significant evidence that the log-odds of person's status as non-white can be predicted by the HIV diagnoses per 100,000 people who share their sex and neighborhood.
 
-```{r}
+```{r, include=FALSE}
 HIV_Data %>%
   count(Neighborhood..U.H.F.) 
 ```
 
-```{r}
+```{r, include=FALSE}
 neighborhood_data <- HIV_Data %>%
   filter(Neighborhood..U.H.F. == "Chelsea - Clinton" | Neighborhood..U.H.F. == "East Harlem") %>%
 rename("year" = "YEAR", "neighborhood" = "Neighborhood..U.H.F.", "diagnoses_per_pop" = "HIV.DIAGNOSES.PER.100.000.POPULATION", "borough" = "Borough", "sex" = "SEX", "race" = "RACE.ETHNICITY") %>%
@@ -81,11 +108,11 @@ rename("year" = "YEAR", "neighborhood" = "Neighborhood..U.H.F.", "diagnoses_per_
 
 Next, we modeled the probability of a person in NYC living in the East Harlem neighborhood as opposed to the Chelsea - Clinton neighborhood, ***REMEMBER TO CITE WHERE WE FOUND THIS INFORMATION ***given the HIV diagnoses per 100,000 people where they live. We picked these neighborhoods because East Harlem is a poor neighborhood and Chelsea - Clinton is a rich neighborhood. Therefore, the model will help us determine if there is a correlation between HIV diagnoses and wealth. 
 
-```{r}
+```{r, include=FALSE}
 neighborhood_logit_model <- glm(neighborhood_binary ~ diagnoses_per_pop_numeric, data = neighborhood_data, family = binomial)
 ```
 
-```{r}
+```{r, include=FALSE}
 summary(neighborhood_logit_model)$coefficients
 ```
 
@@ -108,7 +135,7 @@ exp(-0.005029474)
 This means that the estimated odds of a person living in East Harlem increase by .995 for each additional diagnosis per 100,000 people.
 
 
-```{r}
+```{r, echo=FALSE}
 ggplot(data = neighborhood_data, aes(x= diagnoses_per_pop_numeric, y= neighborhood_binary)) +
   geom_point() + 
   geom_smooth(method = glm, 
@@ -122,7 +149,7 @@ For this model, our null hypothesis is that the log-odds of a person living in E
 
 Since the p-value for the z-test we performed is 7.903*10^-13, which is less than .05, we can conclude that there is significant evidence to support the alternative hypothesis, and that there's significant evidence that the log-odds of person living in East Harlem or Chelsea can be predicted by the HIV diagnoses per 100,000 people who share their race and sex. 
 
-```{r}
+```{r, include=FALSE}
 sex_data <- HIV_Data %>% 
 rename("year" = "YEAR", "neighborhood" = "Neighborhood..U.H.F.", "diagnoses_per_pop" = "HIV.DIAGNOSES.PER.100.000.POPULATION", "borough" = "Borough", "sex" = "SEX", "race" = "RACE.ETHNICITY") %>%
    mutate(sex_binary=ifelse(`sex`=="Female", 0, 1)) %>%
@@ -133,11 +160,11 @@ rename("year" = "YEAR", "neighborhood" = "Neighborhood..U.H.F.", "diagnoses_per_
 
 Finally, we modeled the probability of a person in NYC being female or male, given the HIV diagnoses per 100,000 people where they live. 
 
-```{r}
+```{r, include=FALSE}
 sex_logit_model <- glm(sex_binary ~ diagnoses_per_pop_numeric, data = sex_data, family = binomial)
 ```
 
-```{r}
+```{r, include=FALSE}
 summary(sex_logit_model)$coefficients
 ```
 
@@ -159,7 +186,7 @@ exp(0.03608934)
 
 This means that the estimated odds of a person being male increase by 1.037 for each additional diagnosis per 100,000 people.
 
-```{r}
+```{r, echo=FALSE}
 ggplot(data = sex_data, aes(x= diagnoses_per_pop_numeric, y= sex_binary)) +
   geom_point() + 
   geom_smooth(method = glm, 
@@ -173,3 +200,4 @@ For this model, our null hypothesis is that the log-odds of a person who is male
 
 Since the p-value for the z-test we performed is 3.15e^-141, which is less than .05, we can conclude that there is significant evidence to support the alternative hypothesis, and that there's significant evidence that the log-odds of a person being male can be predicted by the HIV diagnoses per 100,000 people who share their race and neighborhood. 
 
+#Discussion
