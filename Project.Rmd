@@ -36,11 +36,35 @@ summary(race_logit_model)$coefficients
 ```
 
 In logit form, our fitted model equation is
-$log(\hat{pi}/(1-\hat{pi})) = 1.285 + .007*diagnosesper100000pop$
+$log(\hat{pi}/(1-\hat{pi})) = 1.285 + .007*diagnosesper100000pop$. The intercept coefficient means that for a place where the HIV diagnoses per 100,000 people were 0, the log-odds of a person in that place being non-white were 1.285. The slope coefficient means that for each additional diagnosis per 100,000 people, the log-odds of a person in that place being non-white increase by .0076. 
 
-The intercept coefficient means that for a place where the HIV diagnoses per 100,000 people were 0, the log-odds of a person being non-white were 1.285.
+We can convert these numbers to probability form in order to better understand the meaning of them. The probability of a given person being non-white for a place where the HIV diagnoses per 100,000 people were 0 is .783, calculated by: 
 
-**CONVERT FROM ODDS TO LOG ODDS NEXT, then analyze the slope coefficient, then make a graph**
+```{r}
+exp(1.285022023)/(1+ exp(1.285022023))
+
+```
+
+We can also calculate the odds ratio for a one-unit increase:
+```{r}
+exp(0.007639701)
+```
+
+This means that the estimated odds of a person being non-white increase by 1.008 for each additional diagnosis per 100,000 people.
+
+```{r}
+ggplot(data = race_data, aes(x= diagnoses_per_pop_numeric, y= race_binary)) +
+  geom_point() + 
+  geom_smooth(method = glm, 
+              method.args = list(family = binomial),
+              se = FALSE, 
+              formula = y ~ x) +
+  labs(x = "HIV Diagnoses Per 100,000 People", y= "White/Non-White")
+```
+
+For this model, our null hypothesis is that the log-odds of a person being non-white (as opposed to white) cannot be predicted by the HIV diagnoses per 100,000 people where they live. Our alternative hypothesis is that the log-odds of a person being non-white (as opposed to white) can be predicted by the HIV diagnoses per 100,000 people where they live.
+
+Since the p-value for the z-test we performed is 7.903*10^-13, which is less than .05, we can conclude that there is significant evidence to support the alternative hypothesis, and that there's significant evidence that the log-odds of person's status as non-white can be predicted by the HIV diagnoses per 100,000 people where they live. 
 
 ```{r}
 HIV_Data %>%
@@ -51,17 +75,52 @@ HIV_Data %>%
 neighborhood_data <- HIV_Data %>%
   filter(Neighborhood..U.H.F. == "Chelsea - Clinton" | Neighborhood..U.H.F. == "East Harlem") %>%
 rename("year" = "YEAR", "neighborhood" = "Neighborhood..U.H.F.", "diagnoses_per_pop" = "HIV.DIAGNOSES.PER.100.000.POPULATION", "borough" = "Borough", "sex" = "SEX", "race" = "RACE.ETHNICITY") %>%
-   mutate(neighborhood_binary=ifelse(`neighborhood`=="East Harlem", 0, 1)) %>%
+   mutate(neighborhood_binary=ifelse(`neighborhood`=="Chelsea - Clinton", 0, 1)) %>%
     mutate(diagnoses_per_pop_numeric=as.numeric(diagnoses_per_pop))
 ```
+
+Next, we modeled the probability of a person in NYC living in the East Harlem neighborhood as opposed to the Chelsea - Clinton neighborhood, ***REMEMBER TO CITE WHERE WE FOUND THIS INFORMATION ***given the HIV diagnoses per 100,000 people where they live. We picked these neighborhoods because East Harlem is a poor neighborhood and Chelsea - Clinton is a rich neighborhood. Therefore, the model will help us determine if there is a correlation between HIV diagnoses and wealth. 
 
 ```{r}
 neighborhood_logit_model <- glm(neighborhood_binary ~ diagnoses_per_pop_numeric, data = neighborhood_data, family = binomial)
 ```
 
 ```{r}
-summary(neighborhood_logit_model)
+summary(neighborhood_logit_model)$coefficients
 ```
+
+In logit form, our fitted model equation is
+$log(\hat{pi}/(1-\hat{pi})) = .279 -.005*diagnosesper100000pop$. The intercept coefficient means that where the HIV diagnoses per 100,000 people were 0, the log-odds of a person in that place living in East Harlem were were .279. The slope coefficient means that for each additional diagnosis per 100,000 people, the log-odds of a person living in East Harlem decrease by .005. 
+
+We can convert these numbers to probability form in order to better understand the meaning of them. The probability of a given person living in East Harlem when the HIV diagnoses per 100,000 people were 0 is .569, calculated by: 
+
+
+```{r}
+exp(.279098806)/(1+ exp(.279098806))
+
+```
+
+We can also calculate the odds ratio for a one-unit increase:
+```{r}
+exp(-0.005029474)
+```
+
+This means that the estimated odds of a person living in East Harlem increase by .995 for each additional diagnosis per 100,000 people.
+
+```{r}
+ggplot(data = neighborhood_data, aes(x= diagnoses_per_pop_numeric, y= neighborhood_binary)) +
+  geom_point() + 
+  geom_smooth(method = glm, 
+              method.args = list(family = binomial),
+              se = FALSE, 
+              formula = y ~ x) +
+  labs(x = "HIV Diagnoses Per 100,000 People", y= "Chelsea/East Harlem")
+```
+```
+For this model, our null hypothesis is that the log-odds of a person living in East Harlem (as opposed to Chelsea) cannot be predicted by the HIV diagnoses per 100,000 people where they live. Our alternative hypothesis is that the log-odds of a person living in East Harlem (as opposed to Chelsea) can be predicted by the HIV diagnoses per 100,000 people where they live.
+
+Since the p-value for the z-test we performed is .002, which is less than .05, we can conclude that there is significant evidence to support the alternative hypothesis, and that there's significant evidence that the log-odds of a person living in East Harlem or Chelsea can be predicted by the HIV diagnoses per 100,000 people where they live.
+
 
 ```{r}
 sex_data <- HIV_Data %>% 
@@ -71,12 +130,21 @@ rename("year" = "YEAR", "neighborhood" = "Neighborhood..U.H.F.", "diagnoses_per_
   
 ```
 
+Finally, we modeled the probability of a person in NYC being female or male, given the HIV diagnoses per 100,000 people where they live. 
+
 ```{r}
 sex_logit_model <- glm(sex_binary ~ diagnoses_per_pop_numeric, data = sex_data, family = binomial)
 ```
 
 ```{r}
-summary(sex_logit_model)
+summary(sex_logit_model)$coefficients
 ```
+
+
+In logit form, our fitted model equation is
+$log(\hat{pi}/(1-\hat{pi})) = .279 -.005*diagnosesper100000pop$. The intercept coefficient means that for a place where the HIV diagnoses per 100,000 people were 0, the log-odds of a person in that place being non-white were 1.285. The slope coefficient means that for each additional diagnosis per 100,000 people, the log-odds of a person in that place being non-white increase by .0076. 
+
+We can convert these numbers to probability form in order to better understand the meaning of them. The probability of a given person being non-white for a place where the HIV diagnoses per 100,000 people were 0 is .783, calculated by: 
+
 
 
