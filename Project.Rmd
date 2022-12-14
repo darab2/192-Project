@@ -4,7 +4,7 @@ output: html_document
 date: '2022-12-09'
 ---
 ```{r, include=FALSE}
-HIV_Data <- read.csv("HIV_AIDS_Diagnoses_by_Neighborhood__Sex__and_Race_Ethnicity (3).csv")
+HIV_Data <- read.csv("HIV_AIDS_Diagnoses_by_Neighborhood_Sex_and_Race_Ethnicity.csv")
 ```
 
 #Abstract
@@ -132,7 +132,7 @@ We can also calculate the odds ratio for a one-unit increase:
 exp(-0.005029474)
 ```
 
-This means that the estimated odds of a person living in East Harlem increase by .995 for each additional diagnosis per 100,000 people.
+This means that the estimated odds of a person living in East Harlem decrease by .995 for each additional diagnosis per 100,000 people.
 
 
 ```{r, echo=FALSE}
