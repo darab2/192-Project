@@ -31,7 +31,7 @@ The variables in our analysis include a binary primary explanatory variable indi
 
 ##Analysis
 
-In order to evaluate our hypotheses, we fit 3 different logistic regression models with HIV diagnoses per 100,000 people as the primary response variable. Our first model is our primary explanatory variable to observe the relationship between race and probability of an HIV diagnosis. Our second model includes our secondary explanatory variable to understand how wealth differences in two different Manhattan neighborhoods impact HIV diagnoses. Our third model uses our tertiary explanatory variable to observe sex differences in the number of people diagnoses with HIV. To test our hypotheses, we performed individual significance tests and used the calculated p-value to determine the effects of each coefficient on the model.
+In order to evaluate our hypotheses, we fit 3 different logistic regression models with HIV diagnoses per 100,000 people as the primary response variable. Our first model is our primary explanatory variable to observe the relationship between race and probability of an HIV diagnosis. Our second model includes our secondary explanatory variable to understand how wealth differences in two different Manhattan neighborhoods impact HIV diagnoses. Our third model uses our tertiary explanatory variable to observe sex differences in the number of people diagnosed with HIV. To test our hypotheses, we performed individual significance tests and used the calculated p-value to determine the effects of each coefficient on the model.
 
 #Results
 
