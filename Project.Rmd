@@ -17,7 +17,7 @@ The purpose of our analysis is to examine the intersectional relationship betwee
 
 The CDC estimates that there are roughly 1.1 million people living with HIV/AIDS in the United States. The death rate from the illness continues to decline due to increased access to highly effective antiretroviral therapy. While progress has been made towards the ultimate goal of ending the epidemic, about 50,000 new infections occur each year. Of the 1.1 million Americans living with HIV/AIDS, about 16% do not know their status and therefore cannot access treatment (Watkins-Hayes 2014, 432). Various factors, including class, race, sex, and sexual orientation, interact to determine one’s likelihood of exposure to the virus and their access to diagnosis and treatment (Watkins-Hayes 2014, 431; Watkins-Hayes 2014, 434). According to David Huebner, professor of prevention and community health at George Washington University, regional, ethnic, and racial disparities in HIV cases persist in 2022 (Gainer and Brennan 2022). 
 
-The theme of this year’s World AIDS Day was “equal access to testing and treatment.” Accordingly, our research focuses on social determinants that impact an individual’s likelihood of being diagnosed with HIV (Gainer and Brennan 2022). It has been established that several social factors affect the likelihood of infection. However, infection is not synonymous with diagnosis; a patient must have access to testing in order to receive a diagnosis, which suggests greater access to resources in general. We aimed to determine whether there is a significant link between sex, race, and neighborhood and likelihood of HIV diagnosis in order to better understand which demographics are perhaps more susceptible to infection but also have greater access to testing. Further, there appears to be little pre-existing analysis on the link between neighborhood and likelihood of HIV diagnosis, so our research aims to fill that gap and encourage further research in that area. 
+The theme of this year’s World AIDS Day was “equal access to testing and treatment.” Accordingly, our research focuses on social determinants that impact an individual’s likelihood of being diagnosed with HIV (Gainer and Brennan 2022). It has been established that several social factors affect the likelihood of infection. However, we also recognize that infection is not synonymous with diagnosis as one must have access to healthcare resources to receive a diagnosis. Additionally, we undertook our research with the understanding that various factors, such as sex, race, and class, intersect to determine the likelihood of someone being diagnosed. With these matters in mind, we aimed to determine the relationship between sex, race, and neighborhood and the likelihood of HIV diagnosis. Further, there appears to be little pre-existing analysis on the relationship between neighborhood and likelihood of HIV diagnosis, so our research aims to fill that gap and encourage further investigation in that area. 
 
 #Methods
 
@@ -63,9 +63,9 @@ summary(race_logit_model)$coefficients
 ```
 
 In logit form, our fitted model equation is
-$log(\hat{pi}/(1-\hat{pi})) = 1.285 + .007*diagnosesper100000pop$. The intercept coefficient means that when the HIV diagnoses per 100,000 people sharing the same sex and neighborhood were 0, the log-odds of a person sharing those characteristics being non-white were 1.285. The slope coefficient means that for each additional diagnosis per 100,000 people, the log-odds of a person in that place being non-white increase by .0076. 
+$log(\hat{pi}/(1-\hat{pi})) = 1.285 + .007*diagnosesper100000pop$. The intercept coefficient means that when the HIV diagnoses per 100,000 people of the same sex and neighborhood were 0, the log-odds of a person sharing those characteristics being non-white were 1.285. The slope coefficient means that for each additional diagnosis per 100,000 people, the log-odds of a person in that place being non-white increase by .0076. 
 
-We can convert these numbers to probability form in order to better understand the meaning of them. The probability of a given person being non-white for people who share the same sex and neighborhood as them the HIV diagnoses per 100,000 people were 0 is .783, calculated by: 
+We can convert these numbers to probability form in order to better understand their meaning. The probability of a given person being non-white for people who share the same sex and neighborhood as them the HIV diagnoses per 100,000 people were 0 is .783, calculated by: 
 
 ```{r}
 exp(1.285022023)/(1+ exp(1.285022023))
@@ -91,7 +91,7 @@ ggplot(data = race_data, aes(x= diagnoses_per_pop_numeric, y= race_binary)) +
 
 For this model, our null hypothesis is that the log-odds of a person being non-white (as opposed to white) cannot be predicted by the HIV diagnoses per 100,000 people who share their sex and neighborhood. Our alternative hypothesis is that the log-odds of a person being non-white (as opposed to white) can be predicted by the HIV diagnoses per 100,000 people who share their sex and neighborhood.
 
-Since the p-value for the z-test we performed is 7.903*10^-13, which is less than .05, we can conclude that there is significant evidence to support the alternative hypothesis, and that there's significant evidence that the log-odds of person's status as non-white can be predicted by the HIV diagnoses per 100,000 people who share their sex and neighborhood.
+Since the p-value for the z-test we performed is 7.903*10^-13, which is less than .05, we can conclude that there is significant evidence to support the alternative hypothesis, and that there's significant evidence that the log-odds of an individual being non-white can be predicted by the HIV diagnoses per 100,000 people who share their sex and neighborhood.
 
 ```{r, include=FALSE}
 HIV_Data %>%
@@ -106,7 +106,7 @@ rename("year" = "YEAR", "neighborhood" = "Neighborhood..U.H.F.", "diagnoses_per_
     mutate(diagnoses_per_pop_numeric=as.numeric(diagnoses_per_pop))
 ```
 
-Next, we modeled the probability of a person in NYC living in the East Harlem neighborhood as opposed to the Chelsea - Clinton neighborhood, ***REMEMBER TO CITE WHERE WE FOUND THIS INFORMATION ***given the HIV diagnoses per 100,000 people where they live. We picked these neighborhoods because East Harlem is a poor neighborhood and Chelsea - Clinton is a rich neighborhood. Therefore, the model will help us determine if there is a correlation between HIV diagnoses and wealth. 
+Next, we modeled the probability of a person in NYC living in the East Harlem neighborhood as opposed to the Chelsea - Clinton neighborhood given the HIV diagnoses per 100,000 people where they live. We picked these neighborhoods because East Harlem is a poor neighborhood and Chelsea - Clinton is a rich neighborhood (Office of the New York State Comptroller 2018, 1; Point2 2020). Therefore, the model will help us determine if there is a correlation between HIV diagnoses and wealth. 
 
 ```{r, include=FALSE}
 neighborhood_logit_model <- glm(neighborhood_binary ~ diagnoses_per_pop_numeric, data = neighborhood_data, family = binomial)
@@ -117,9 +117,9 @@ summary(neighborhood_logit_model)$coefficients
 ```
 
 In logit form, our fitted model equation is
-$log(\hat{pi}/(1-\hat{pi})) = .279 -.005*diagnosesper100000pop$. The intercept coefficient means that wheb HIV diagnoses per 100,000 people were 0, the log-odds of a person with the same sex and race characteristics living in East Harlem were were .279. The slope coefficient means that for each additional diagnosis per 100,000 people with those same characteristics, the log-odds of a person living in East Harlem decrease by .005. 
+$log(\hat{pi}/(1-\hat{pi})) = .279 -.005*diagnosesper100000pop$. The intercept coefficient means that when HIV diagnoses per 100,000 people were 0, the log-odds of a person with the same sex and race characteristics living in East Harlem were were .279. The slope coefficient means that for each additional diagnosis per 100,000 people with those same characteristics, the log-odds of a person living in East Harlem decrease by .005. 
 
-We can convert these numbers to probability form in order to better understand the meaning of them. The probability of a given person living in East Harlem when the HIV diagnoses per 100,000 people were 0 is .569, calculated by: 
+We can convert these numbers to probability form in order to better understand their meaning. The probability of a given person living in East Harlem when the HIV diagnoses per 100,000 people were 0 is .569, calculated by: 
 
 
 ```{r}
@@ -156,8 +156,6 @@ rename("year" = "YEAR", "neighborhood" = "Neighborhood..U.H.F.", "diagnoses_per_
     mutate(diagnoses_per_pop_numeric=as.numeric(diagnoses_per_pop))
 ```
 
-
-
 Finally, we modeled the probability of a person in NYC being female or male, given the HIV diagnoses per 100,000 people where they live. 
 
 ```{r, include=FALSE}
@@ -172,7 +170,7 @@ summary(sex_logit_model)$coefficients
 In logit form, our fitted model equation is
 $log(\hat{pi}/(1-\hat{pi})) = -.191 -.036*diagnosesper100000pop$. The intercept coefficient means that when the HIV diagnoses per 100,000 people were 0, the log-odds of a person with the same race and neighborhood being male are -.191. The slope coefficient means that for each additional diagnosis per 100,000 people, the log-odds of a person sharing the same race and neighborhood characteristics being male increase by .036. 
 
-We can convert these numbers to probability form in order to better understand the meaning of them. The probability of a given person being male for a place where the HIV diagnoses per 100,000 people were 0 is .452, calculated by: 
+We can convert these numbers to probability form in order to better understand their meaning. The probability of a given person being male for a place where the HIV diagnoses per 100,000 people were 0 is .452, calculated by: 
 
 ```{r}
 exp(-0.19082304)/(1+ exp(-0.19082304))
@@ -196,8 +194,8 @@ ggplot(data = sex_data, aes(x= diagnoses_per_pop_numeric, y= sex_binary)) +
   labs(x = "HIV Diagnoses Per 100,000 People", y= "Male/Female")
 ```
 
-For this model, our null hypothesis is that the log-odds of a person who is male (as opposed to female) cannot be predicted by the HIV diagnoses per 100,000 people that have their same neighborhood and race. Our alternative hypothesis is that the log-odds of a person who is male (as opposed to female) can be predicted by the HIV diagnoses per 100,000 people that have their same neighborhood and race. 
+For this model, our null hypothesis is that the log-odds of a person who is male (as opposed to female) cannot be predicted by the HIV diagnoses per 100,000 people that have their same neighborhood and race. Our alternative hypothesis is that the log-odds of a person who is male (as opposed to female) can be predicted by the HIV diagnoses per 100,000 people from the same neighborhood and of the same race. 
 
-Since the p-value for the z-test we performed is 3.15e^-141, which is less than .05, we can conclude that there is significant evidence to support the alternative hypothesis, and that there's significant evidence that the log-odds of a person being male can be predicted by the HIV diagnoses per 100,000 people who share their race and neighborhood. 
+Since the p-value for the z-test we performed is 3.15e^-141, which is less than .05, we can conclude that there is significant evidence to support the alternative hypothesis, and that there is significant evidence that the log-odds of a person being male can be predicted by the HIV diagnoses per 100,000 people who share their race and neighborhood. 
 
 #Discussion
