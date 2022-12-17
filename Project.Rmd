@@ -1,6 +1,9 @@
 ---
 title: "Analysis of New HIV Diagnoses in NYC by Race, Sex, and Neighborhood"
-output: html_document
+author: "Dara Burke, Jessica Feng, Cecily Kolko, and Victoria Georgiou"
+output:
+  pdf_document: default
+  html_document: default
 date: '2022-12-09'
 ---
 ```{r, include=FALSE}
