@@ -10,33 +10,33 @@ date: '2022-12-09'
 HIV_Data <- read.csv("HIV_AIDS_Diagnoses_by_Neighborhood_Sex_and_Race_Ethnicity.csv")
 ```
 
-#Abstract
+# Abstract
 
 The purpose of our analysis is to examine the intersectional relationship between race, sex, neighborhood, and likelihood of HIV diagnosis in New York City. Our analysis was based on the HIV/AIDS Diagnoses by Neighborhood, Sex, and Race/Ethnicity data from NYC Open Data, which includes data on new HIV/AIDS diagnoses in New York City from 2016 through 2020. By fitting three logistic regression models with HIV diagnoses per 100,00 people as the response variable, we found that neighborhood and race were significant predictors of the likelihood of HIV diagnosis. Our research investigates New York City’s modern HIV/AIDS landscape and the social determinants of health that leave specific demographics more vulnerable to infection.
 
 \newpage
 
-#Introduction
+# Introduction
 
 The CDC estimates that there are roughly 1.1 million people living with HIV/AIDS in the United States. The death rate from the illness continues to decline due to increased access to highly effective antiretroviral therapy. While progress has been made towards the ultimate goal of ending the epidemic, about 50,000 new infections occur each year. Of the 1.1 million Americans living with HIV/AIDS, about 16% do not know their status and therefore cannot access treatment (Watkins-Hayes 2014, 432). Various factors, including class, race, sex, and sexual orientation, interact to determine one’s likelihood of exposure to the virus and their access to diagnosis and treatment (Watkins-Hayes 2014, 431; Watkins-Hayes 2014, 434). According to David Huebner, professor of prevention and community health at George Washington University, regional, ethnic, and racial disparities in HIV cases persist in 2022 (Gainer and Brennan 2022). 
 
 The theme of this year’s World AIDS Day was “equal access to testing and treatment.” Accordingly, our research focuses on social determinants that impact an individual’s likelihood of being diagnosed with HIV (Gainer and Brennan 2022). It has been established that several social factors affect the likelihood of infection. However, we also recognize that infection is not synonymous with diagnosis as one must have access to healthcare resources to receive a diagnosis. Additionally, we undertook our research with the understanding that various factors, such as sex, race, and class, intersect to determine the likelihood of someone being diagnosed. With these matters in mind, we aimed to determine the relationship between sex, race, and neighborhood and the likelihood of HIV diagnosis. Further, there appears to be little pre-existing analysis on the relationship between neighborhood and likelihood of HIV diagnosis, so our research aims to fill that gap and encourage further investigation in that area. 
 
-#Methods
+# Methods
 
-##Data
+## Data
 
 This study uses data from NYC OpenData, that was given to the NYC Depart of Health and Mental Hygiene (DOHMH). The dataset, HIV/AIDS Diagnoses by Neighborhood, Sex, and Race/Ethnicity, includes data on people who were diagnosed with HIV/AIDS in NYC from 2010 through 2020. A unit of observation in the dataset is the number of people diagnosed with HIV/AIDS by year, neighborhood, sex, and race/ethnicity. 
 
-##Variables
+## Variables
 
 The variables in our analysis include a binary primary explanatory variable indicating whether or not a person is white, HIV diagnoses per 100,000 people as the primary response variable, a binary explanatory variable indicating whether a neighborhood is East Harlem (0) or Chelsea - Clinton (1) as the secondary explanatory variable, and a binary tertiary explanatory variable indicating whether or not a person is male. 
 
-##Analysis
+## Analysis
 
 In order to evaluate our hypotheses, we fit 3 different logistic regression models with HIV diagnoses per 100,000 people as the primary response variable. Our first model is our primary explanatory variable to observe the relationship between race and probability of an HIV diagnosis. Our second model includes our secondary explanatory variable to understand how wealth differences in two different Manhattan neighborhoods impact HIV diagnoses. Our third model uses our tertiary explanatory variable to observe sex differences in the number of people diagnosed with HIV. To test our hypotheses, we performed individual significance tests and used the calculated p-value to determine the effects of each coefficient on the model.
 
-#Results
+# Results
 
 ```{r, include=FALSE}
 library(tidyverse)
@@ -82,14 +82,14 @@ exp(0.007639701)
 
 This means that the estimated odds of a person being non-white increase by 1.008 for each additional diagnosis per 100,000 people.
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, warning=FALSE}
 ggplot(data = race_data, aes(x= diagnoses_per_pop_numeric, y= race_binary)) +
   geom_point() + 
   geom_smooth(method = glm, 
               method.args = list(family = binomial),
               se = FALSE, 
               formula = y ~ x) +
-  labs(x = "HIV Diagnoses Per 100,000 People", y= "White/Non-White")
+  labs(x = "HIV Diagnoses Per 100,000 People", y= "White/Non-White", title = "Figure 1")
 ```
 
 For this model, our null hypothesis is that the log-odds of a person being non-white (as opposed to white) cannot be predicted by the HIV diagnoses per 100,000 people who share their sex and neighborhood. Our alternative hypothesis is that the log-odds of a person being non-white (as opposed to white) can be predicted by the HIV diagnoses per 100,000 people who share their sex and neighborhood.
@@ -138,14 +138,14 @@ exp(-0.005029474)
 This means that the estimated odds of a person living in East Harlem decrease by .995 for each additional diagnosis per 100,000 people.
 
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, warning=FALSE}
 ggplot(data = neighborhood_data, aes(x= diagnoses_per_pop_numeric, y= neighborhood_binary)) +
   geom_point() + 
   geom_smooth(method = glm, 
               method.args = list(family = binomial),
               se = FALSE, 
               formula = y ~ x) +
-  labs(x = "HIV Diagnoses Per 100,000 People", y= "Chelsea/East Harlem")
+  labs(x = "HIV Diagnoses Per 100,000 People", y= "Chelsea/East Harlem", title = "Figure 2")
 ```
 
 For this model, our null hypothesis is that the log-odds of a person living in East Harlem (as opposed to Chelsea) cannot be predicted by the HIV diagnoses per 100,000 people that have their same sex and race. Our alternative hypothesis is that the log-odds of a person living in East Harlem (as opposed to Chelsea) can be predicted by the HIV diagnoses per 100,000 people that have their same sex and race
@@ -187,28 +187,32 @@ exp(0.03608934)
 
 This means that the estimated odds of a person being male increase by 1.037 for each additional diagnosis per 100,000 people.
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, warning=FALSE}
 ggplot(data = sex_data, aes(x= diagnoses_per_pop_numeric, y= sex_binary)) +
   geom_point() + 
   geom_smooth(method = glm, 
               method.args = list(family = binomial),
               se = FALSE, 
               formula = y ~ x) +
-  labs(x = "HIV Diagnoses Per 100,000 People", y= "Male/Female")
+  labs(x = "HIV Diagnoses Per 100,000 People", y= "Male/Female", title = "Figure 3")
 ```
 
 For this model, our null hypothesis is that the log-odds of a person who is male (as opposed to female) cannot be predicted by the HIV diagnoses per 100,000 people that have their same neighborhood and race. Our alternative hypothesis is that the log-odds of a person who is male (as opposed to female) can be predicted by the HIV diagnoses per 100,000 people from the same neighborhood and of the same race. 
 
 Since the p-value for the z-test we performed is 3.15e^-141, which is less than .05, we can conclude that there is significant evidence to support the alternative hypothesis, and that there is significant evidence that the log-odds of a person being male can be predicted by the HIV diagnoses per 100,000 people who share their race and neighborhood. 
 
-#Discussion
+# Discussion
 
-The plots indicate that higher proportions of non-white people, Chelsea residents, and males in NYC were diagnosed with HIV between 2016 and 2020. Our primary hypothesis was that white people would have a higher likelihood of diagnosis due to greater access to healthcare resources, but there was significant evidence that that hypothesis was untrue. The first of our secondary hypotheses was that Manhattan would have a higher proportion of people diagnosed with HIV due to generally greater wealth and healthcare access. We shifted that hypothesis to compare the proportions of diagnoses in two Manhattan neighborhoods with drastically different income levels. Our hypothesis was that the wealthier Chelsea neighborhood would have a higher proportion of people diagnosed with HIV than the lower income East Harlem neighborhood. There was significant evidence that the hypothesis was untrue as we found that East Harlem residents were more likely to have HIV diagnoses. The second of our secondary hypotheses was that a higher proportion of men would have HIV diagnoses. There was significant evidence to support that hypothesis. Based on these findings, HIV prevention and treatment programs in NYC should be focused around lower-income communities, non-white people, and men. For further research, more neighborhoods in NYC could be studied to see if these findings hold true across the city. Research could also be done in other cities to see if these findings are true in other urban areas in different regions. Despite the importance of our findings, we recognize that there are limitations to our research due to biased data selection. People living with HIV may refuse to have their information collected. Further, those diagnosed before 2016 are not recorded in this data set. Lastly, not everyone living with HIV has been diagnosed, so the data naturally does not reflect those individuals.
+The plots indicate that higher proportions of non-white people, Chelsea residents, and males in NYC were diagnosed with HIV between 2016 and 2020. Our primary hypothesis was that white people would have a higher likelihood of diagnosis due to greater access to healthcare resources, but there was significant evidence that that hypothesis was untrue (Figure 1). The first of our secondary hypotheses was that Manhattan would have a higher proportion of people diagnosed with HIV due to generally greater wealth and healthcare access. We shifted that hypothesis to compare the proportions of diagnoses in two Manhattan neighborhoods with drastically different income levels. Our hypothesis was that the wealthier Chelsea neighborhood would have a higher proportion of people diagnosed with HIV than the lower income East Harlem neighborhood. There was significant evidence that the hypothesis was untrue as we found that East Harlem residents were more likely to have HIV diagnoses (Figure 2). The second of our secondary hypotheses was that a higher proportion of men would have HIV diagnoses. There was significant evidence to support that hypothesis (Figure 3). Based on these findings, HIV prevention and treatment programs in NYC should be focused around lower-income communities, non-white people, and men. For further research, more neighborhoods in NYC could be studied to see if these findings hold true across the city. Research could also be done in other cities to see if these findings are true in other urban areas in different regions. Despite the importance of our findings, we recognize that there are limitations to our research due to biased data selection. People living with HIV may refuse to have their information collected. Further, those diagnosed before 2016 are not recorded in this data set. Lastly, not everyone living with HIV has been diagnosed, so the data naturally does not reflect those individuals.
 
+\newpage
 
-#References 
+# References 
 
 An Economic Snapshot of the East Harlem Neighborhood. Office of the New York State Comptroller, 2018, pp. 1–8, https://www.osc.state.ny.us/files/reports/osdc/pdf/report-9-2018.pdf.
+
 Chelsea Demographics. Point2, 2020, https://www.point2homes.com/US/Neighborhood/NY/New-York-City/Manhattan/Chelsea-Demographics.html.
+
 Gainer, Alice, and Dick Brennan. “World AIDS Day Memorial Held in West Village for First Time Since Before COVID Pandemic.” CBS New York, 1 Dec. 2022, https://www.cbsnews.com/newyork/news/world-aids-day-memorial-west-village-2022/.
+
 Watkins-Hayes, Celeste. “Intersectionality and the Sociology of HIV/AIDS: Past, Present, and Future Research Directions.” Annual Review of Sociology, vol. 40, 2014, pp. 431–57.
